@@ -1,31 +1,18 @@
-import { useMemo, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { motion } from 'framer-motion';
+import { COMPETITIONS_DATA, STATS_DATA } from '../data/portfolioData';
+import { Trophy } from 'lucide-react';
 
 gsap.registerPlugin(ScrollTrigger);
 
-interface StatItem {
-  numericValue: number;
-  prefix: string;
-  suffix: string;
-  label: string;
-}
-
-const STATS: StatItem[] = [
-  { numericValue: 5000, prefix: '', suffix: '+', label: 'Students Mentored' },
-  { numericValue: 8, prefix: 'Top ', suffix: '%', label: 'JEE Mains Rank' },
-  { numericValue: 7.49, prefix: '', suffix: '', label: 'CGPA at IIT KGP' },
-];
-
-const NATIONAL_STAT = { value: 'National', label: 'Product Construct Finalist' };
-
 export default function Achievements() {
   const sectionRef = useRef<HTMLElement>(null);
+  const num0Ref = useRef<HTMLSpanElement>(null);
   const num1Ref = useRef<HTMLSpanElement>(null);
   const num2Ref = useRef<HTMLSpanElement>(null);
   const num3Ref = useRef<HTMLSpanElement>(null);
-  const numberRefs = useMemo(() => [num1Ref, num2Ref, num3Ref], []);
+  const numberRefs = [num0Ref, num1Ref, num2Ref, num3Ref];
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -38,7 +25,7 @@ export default function Achievements() {
       },
     });
 
-    STATS.forEach((stat, index) => {
+    STATS_DATA.forEach((stat, index) => {
       const animObj = { val: 0 };
       const el = numberRefs[index].current;
       if (!el) return;
@@ -50,8 +37,9 @@ export default function Achievements() {
           duration: 1.5,
           ease: 'power2.out',
           onUpdate: () => {
-            if (stat.numericValue === 7.49) {
-              el.textContent = `${stat.prefix}${animObj.val.toFixed(2)}${stat.suffix}`;
+            if (stat.numericValue >= 100000) {
+              const inLakhs = (animObj.val / 100000).toFixed(0);
+              el.textContent = `${stat.prefix}${inLakhs}L${stat.suffix}`;
             } else {
               el.textContent = `${stat.prefix}${Math.round(animObj.val)}${stat.suffix}`;
             }
@@ -61,166 +49,111 @@ export default function Achievements() {
       );
     });
 
-    // Add entrance animation for the section title
-    gsap.fromTo(
-      sectionRef.current?.querySelector('h2'),
-      { opacity: 0, y: 30, scale: 0.9 },
-      {
-        opacity: 1,
-        y: 0,
-        scale: 1,
-        duration: 0.8,
-        ease: 'outElastic(0.5, 0.3)',
-        delay: 0.2,
-        scrollTrigger: {
-          trigger: section,
-          start: 'top 80%',
-        },
-      }
-    );
-
-    // Add 3D tilt effect to stat containers on hover
-    const statContainers = sectionRef.current?.querySelectorAll('.text-center');
-    statContainers.forEach((container) => {
-      const handleMouseMove = (e: MouseEvent) => {
-        const rect = (container as HTMLElement).getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-
-        const rotateX = ((y - centerY) / centerY) * 3; // Max 3 degrees
-        const rotateY = ((centerX - x) / centerX) * 3; // Max 3 degrees
-
-        (container as HTMLElement).style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(20px)`;
-        (container as HTMLElement).style.transition = 'transform 0.1s ease-out';
-      };
-
-      const handleMouseLeave = () => {
-        (container as HTMLElement).style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg) translateZ(0)';
-        (container as HTMLElement).style.transition = 'transform 0.3s ease-out';
-      };
-
-      container.addEventListener('mousemove', handleMouseMove);
-      container.addEventListener('mouseleave', handleMouseLeave);
-    });
-
     return () => {
       tl.kill();
     };
-  }, [numberRefs]);
+  }, []);
 
   return (
     <section
       id="achievements"
       ref={sectionRef}
-      className="bg-[#111111] py-[80px] relative overflow-hidden"
+      className="bg-[#0e0e0e] py-[90px] border-y border-white/[0.06]"
     >
-      {/* Animated background elements */}
-      <div className="absolute inset-0 -z-10 pointer-events-none">
-        <div className="absolute left-0 top-0 w-[2px] h-[50%] bg-[linear-gradient(180deg,transparent,var(--neon-cyan))] animate-[lineGrow_3s ease-in_out_infinite]"></div>
-        <div className="absolute right-0 bottom-0 w-[2px] h-[50%] bg-[linear-gradient(0deg,transparent,var(--neon-magenta))] animate-[lineGrow_3s ease-in_out_infinite] delay-1.5"></div>
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[120px] h-[120px] bg-[radialgradient(circle_at_center,var(--neon-cyan)_0%,transparent_70%)] blur-[20px] opacity-20 animate-[pulse_6s ease-in_out_infinite]"></div>
-      </div>
-
-      <div className="content-container relative">
-        <div className="text-center mb-12">
-          <motion.h2
-            className="font-display text-section-heading text-white"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "outElastic(0.5, 0.3)" }}
-            whileHover={{
-              scale: 1.05,
-              transition: { duration: 0.3, type: "spring", stiffness: 300 }
-            }}
-            whileTap={{
-              scale: 0.95
-            }}
-          >
-            ACHIEVEMENTS & MILESTONES
-          </motion.h2>
-          <div className="w-[60px] h-[2px] bg-[linear-gradient(90deg,transparent,var(--neon-cyan),transparent)] mx-auto mt-4" />
+      <div className="content-container">
+        {/* Metric Counters Grid */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 pb-14 border-b border-white/[0.08]">
+          {STATS_DATA.map((stat, idx) => (
+            <div key={stat.label} className="text-center group">
+              <span
+                ref={numberRefs[idx]}
+                className="font-display text-[clamp(34px,5vw,56px)] font-bold text-[#00d4ff] block transition-transform group-hover:scale-105 duration-300"
+              >
+                0
+              </span>
+              <span className="text-[14px] font-semibold text-white mt-1 block">
+                {stat.label}
+              </span>
+              <span className="text-caption text-[rgba(255,255,255,0.45)] mt-1 block font-mono-jet">
+                {stat.subtext}
+              </span>
+            </div>
+          ))}
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-4">
-          <motion.div
-            ref={num1Ref}
-            whileInView={{ opacity: 1, y: 0, scale: 1 }}
-            initial={{ opacity: 0, y: 30, scale: 0.8 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.8, ease: "outElastic(0.5, 0.3)" }}
-            className="text-center relative group"
-          >
-            <span
-              className="font-display text-[clamp(36px,5vw,56px)] font-bold text-[#00d4ff] block text-neon-glow"
-            >
-              0
-            </span>
-            <span className="text-caption text-[rgba(255,255,255,0.5)] mt-2 block">
-              {STATS[0].label}
-            </span>
-            {/* Animated decorative element */}
-            <div className="absolute -top-2 -left-1/2 -translate-x-1/2 w-4 h-4 bg-[radialgradient(circle_at_center,var(--neon-cyan)_0%,transparent_70%)] animate-[pulse_2s ease-in_out_infinite]" />
-          </motion.div>
+        {/* Competitions & Podiums Section */}
+        <div className="mt-14">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+            <div>
+              <div className="flex items-center gap-2 text-caption text-[#00d4ff] mb-2">
+                <Trophy size={16} />
+                <span>02 · AWARDS & COMPETITIONS</span>
+              </div>
+              <h3 className="font-display text-[26px] sm:text-[32px] font-bold text-white">
+                Inter-IIT & National Case Study Wins
+              </h3>
+            </div>
+            <p className="text-[13px] text-[rgba(255,255,255,0.6)] max-w-md">
+              Top national and campus podium finishes evaluated across real-world civil engineering, quick-commerce, and clean energy business plans.
+            </p>
+          </div>
 
-          <motion.div
-            ref={num2Ref}
-            whileInView={{ opacity: 1, y: 0, scale: 1 }}
-            initial={{ opacity: 0, y: 30, scale: 0.8 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.8, delay: 0.1, ease: "outElastic(0.5, 0.3)" }}
-            className="text-center relative group"
-          >
-            <span
-              className="font-display text-[clamp(36px,5vw,56px)] font-bold text-[#00d4ff] block text-neon-glow"
-            >
-              0
-            </span>
-            <span className="text-caption text-[rgba(255,255,255,0.5)] mt-2 block">
-              {STATS[1].label}
-            </span>
-            {/* Animated decorative element */}
-            <div className="absolute -top-2 -left-1/2 -translate-x-1/2 w-4 h-4 bg-[radialgradient(circle_at_center,var(--neon-magenta)_0%,transparent_70%)] animate-[pulse_2s ease-in_out_infinite] delay-0.2" />
-          </motion.div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {COMPETITIONS_DATA.map((comp) => {
+              const isGold = comp.award.includes('Gold');
+              return (
+                <div
+                  key={comp.title}
+                  className="glass-card p-6 flex flex-col justify-between transition-all duration-300 hover:border-[rgba(0,212,255,0.3)] hover:-translate-y-1"
+                >
+                  <div>
+                    <div className="flex items-center justify-between gap-2 mb-3">
+                      <span
+                        className={`px-3 py-1 rounded-full text-[11px] font-mono-jet font-semibold uppercase tracking-wider flex items-center gap-1.5 ${
+                          isGold
+                            ? 'bg-amber-400/15 text-amber-300 border border-amber-400/30'
+                            : 'bg-slate-300/15 text-slate-200 border border-slate-300/30'
+                        }`}
+                      >
+                        <Trophy size={12} />
+                        {comp.award}
+                      </span>
+                      <span className="text-[11px] font-mono-jet text-[rgba(255,255,255,0.5)]">
+                        {comp.date}
+                      </span>
+                    </div>
 
-          <motion.div
-            ref={num3Ref}
-            whileInView={{ opacity: 1, y: 0, scale: 1 }}
-            initial={{ opacity: 0, y: 30, scale: 0.8 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.8, delay: 0.2, ease: "outElastic(0.5, 0.3)" }}
-            className="text-center relative group"
-          >
-            <span
-              className="font-display text-[clamp(36px,5vw,56px)] font-bold text-[#00d4ff] block text-neon-glow"
-            >
-              0
-            </span>
-            <span className="text-caption text-[rgba(255,255,255,0.5)] mt-2 block">
-              {STATS[2].label}
-            </span>
-            {/* Animated decorative element */}
-            <div className="absolute -top-2 -left-1/2 -translate-x-1/2 w-4 h-4 bg-[radialgradient(circle_at_center,var(--neon-blue)_0%,transparent_70%)] animate-[pulse_2s ease-in_out_infinite] delay-0.4" />
-          </motion.div>
+                    <h4 className="font-display text-[18px] font-bold text-white mb-1.5 leading-snug">
+                      {comp.title}
+                    </h4>
+                    <div className="text-[13px] text-[#00d4ff] mb-3">
+                      {comp.organization}
+                    </div>
+                    <p className="text-[13px] text-[rgba(255,255,255,0.65)] leading-relaxed mb-4">
+                      {comp.description}
+                    </p>
 
-          <motion.div
-            whileInView={{ opacity: 1, y: 0, scale: 1 }}
-            initial={{ opacity: 0, y: 30, scale: 0.8 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.8, delay: 0.3, ease: "outElastic(0.5, 0.3)" }}
-            className="text-center relative group"
-          >
-            <span className="font-display text-[clamp(36px,5vw,56px)] font-bold text-[#00d4ff] block text-neon-glow">
-              {NATIONAL_STAT.value}
-            </span>
-            <span className="text-caption text-[rgba(255,255,255,0.5)] mt-2 block">
-              {NATIONAL_STAT.label}
-            </span>
-            {/* Animated decorative element */}
-            <div className="absolute -top-2 -left-1/2 -translate-x-1/2 w-4 h-4 bg-[radialgradient(circle_at_center,var(--neon-purple)_0%,transparent_70%)] animate-[pulse_2s ease-in_out_infinite] delay-0.5" />
-          </motion.div>
+                    <ul className="space-y-2 mb-4">
+                      {comp.bullets.map((b, bIdx) => (
+                        <li key={bIdx} className="text-[12px] text-[rgba(255,255,255,0.6)] flex items-start gap-2">
+                          <span className="text-[#00d4ff] mt-1 shrink-0">▸</span>
+                          <span>{b}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div className="flex flex-wrap gap-1.5 pt-3 border-t border-white/[0.06]">
+                    {comp.tags.map((tag) => (
+                      <span key={tag} className="text-[10px] font-mono-jet px-2 py-0.5 rounded bg-white/[0.04] text-[rgba(255,255,255,0.6)]">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>

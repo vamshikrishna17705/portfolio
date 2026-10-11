@@ -1,227 +1,155 @@
-import { useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ArrowUpRight } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { ArrowUpRight, Github, Filter } from 'lucide-react';
+import { PROJECTS_DATA } from '../data/portfolioData';
+import type { DomainType } from '../data/portfolioData';
 
 gsap.registerPlugin(ScrollTrigger);
 
-interface Project {
-  number: string;
-  name: string;
-  description: string;
-  tags: string[];
-  image: string;
-  link: string;
+interface ProjectsProps {
+  activeDomain: DomainType;
 }
 
-const PROJECTS: Project[] = [
-  {
-    number: '01',
-    name: 'InsightFlow AI',
-    description:
-      'AI-powered Workflow & Analytics Platform. Designed a scalable backend handling authentication and decoupled state storage for AI processing pipelines. Focuses on automating manual workflows by turning unstructured inputs into structured analytics dashboards.',
-    tags: ['React', 'Next.js', 'Express.js', 'MongoDB', 'JWT'],
-    image: '/images/project-insightflow.jpg',
-    link: 'https://github.com/vamshikrishna17705/insightflow-ai',
-  },
-  {
-    number: '02',
-    name: 'Finance Product Portfolio',
-    description:
-      'Quantitative Analysis & Financial Modeling Engines. Programmed automated scripts to compute risk-adjusted equity returns (Sharpe Ratios, Beta volatility indices) and simulated startup financial paths with 5-panel statistical visualizers.',
-    tags: ['Python', 'Pandas', 'NumPy', 'Matplotlib', 'SQL'],
-    image: '/images/project-finance.jpg',
-    link: 'https://github.com/vamshikrishna17705/finance-product-portfolio',
-  },
-  {
-    number: '03',
-    name: 'Stock Portfolio Risk Analyzer',
-    description:
-      'Computed returns, Beta indices, and Sharpe risk-adjusted parameters for a mock ₹1,00,000 equity portfolio of 10 NSE stocks, identifying optimal sector weights and visualizing risk-return tradeoffs.',
-    tags: ['Python', 'NumPy', 'Risk Metrics', 'Pandas'],
-    image: '/images/project-risk.jpg',
-    link: 'https://github.com/vamshikrishna17705/finance-product-portfolio',
-  },
-  {
-    number: '04',
-    name: 'D2C Startup 3-Statement Model',
-    description:
-      'Integrated P&L, Cash Flow, and Balance Sheet model with an automated Discounted Cash Flow (DCF) valuation engine and dynamic break-even sensitivity analysis for startup financial planning.',
-    tags: ['Python', 'DCF Valuation', 'Modeling', 'Finance'],
-    image: '/images/project-valuation.jpg',
-    link: 'https://github.com/vamshikrishna17705/finance-product-portfolio',
-  },
-];
-
-export default function Projects() {
+export default function Projects({ activeDomain }: ProjectsProps) {
   const sectionRef = useRef<HTMLElement>(null);
-  const cardsRef = useRef<HTMLDivElement>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string>('All');
 
-  useEffect(() => {
-    const section = sectionRef.current;
-    const cards = cardsRef.current;
-    if (!section || !cards) return;
+  // Filter projects by category or active domain
+  const filteredProjects = PROJECTS_DATA.filter((project) => {
+    if (selectedCategory !== 'All') {
+      return project.category === selectedCategory;
+    }
+    if (activeDomain !== 'all') {
+      return project.domain === activeDomain;
+    }
+    return true;
+  });
 
-    const cardElements = cards.children;
-
-    gsap.fromTo(
-      cardElements,
-      { opacity: 0, y: 60, scale: 0.95 },
-      {
-        opacity: 1,
-        y: 0,
-        scale: 1,
-        duration: 0.8,
-        ease: 'outElastic(0.5, 0.3)',
-        stagger: 0.15,
-        scrollTrigger: {
-          trigger: section,
-          start: 'top 80%',
-        },
-      }
-    );
-
-    // Add 3D tilt effect to project cards on hover
-    const projectCards = sectionRef.current?.querySelectorAll('div.group');
-    projectCards.forEach((card) => {
-      const handleMouseMove = (e: MouseEvent) => {
-        const rect = (card as HTMLElement).getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-
-        const rotateX = ((y - centerY) / centerY) * 5; // Max 5 degrees
-        const rotateY = ((centerX - x) / centerX) * 5; // Max 5 degrees
-
-        (card as HTMLElement).style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.03, 1.03, 1.03)`;
-        (card as HTMLElement).style.transition = 'transform 0.1s ease-out';
-      };
-
-      const handleMouseLeave = () => {
-        (card as HTMLElement).style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
-        (card as HTMLElement).style.transition = 'transform 0.3s ease-out';
-      };
-
-      card.addEventListener('mousemove', handleMouseMove);
-      card.addEventListener('mouseleave', handleMouseLeave);
-    });
-
-    return () => {
-      ScrollTrigger.getAll().forEach((t) => {
-        if (t.trigger === section) t.kill();
-      });
-    };
-  }, []);
+  const categories = ['All', 'AI / Software', 'Data & Quantitative', 'Deep Tech & Metallurgy'];
 
   return (
     <section
       id="projects"
       ref={sectionRef}
-      className="bg-[#0a0a0a] py-[120px] relative overflow-hidden"
+      className="bg-[#0a0a0a] py-[100px] border-b border-white/[0.05]"
     >
-      {/* Animated background elements */}
-      <div className="absolute inset-0 -z-10 pointer-events-none">
-        <div className="absolute left-0 top-[20%] w-[2px] h-[60%] bg-[linear-gradient(180deg,transparent,var(--neon-cyan))] animate-[pulse_4s ease-in_out_infinite]"></div>
-        <div className="absolute right-0 bottom-[20%] w-[2px] h-[60%] bg-[linear-gradient(0deg,transparent,var(--neon-magenta))] animate-[pulse_4s ease-in_out_infinite] delay-2"></div>
-        <div className="absolute left-[30%] top-[30%] w-[100px] h-[100px] bg-[radialgradient(circle_at_center,var(--neon-blue)_0%,transparent_70%)] blur-[30px] opacity-15 animate-[float_6s ease-in_out_infinite]"></div>
-      </div>
-
-      <div className="content-container relative">
-        <div className="text-center mb-12">
-          <motion.h2
-            className="font-display text-section-heading text-white"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "outElastic(0.5, 0.3)" }}
-            whileHover={{
-              scale: 1.05,
-              transition: { duration: 0.3, type: "spring", stiffness: 300 }
-            }}
-            whileTap={{
-              scale: 0.95
-            }}
-          >
-            FEATURED PROJECTS
-          </motion.h2>
-          <div className="w-[60px] h-[2px] bg-[linear-gradient(90deg,transparent,var(--neon-cyan),transparent)] mx-auto mt-4" />
+      <div className="content-container">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+          <div>
+            <div className="text-caption text-[#00d4ff] mb-3">
+              05 · TECHNICAL ARTIFACTS & RESEARCH
+            </div>
+            <h2 className="font-display text-section-heading text-white">
+              Featured Projects
+            </h2>
+          </div>
+          <p className="text-body-large text-[rgba(255,255,255,0.65)] max-w-xl">
+            From production-grade full-stack AI engines and financial valuation scripts to IIT Kharagpur faculty-guided metallurgical research.
+          </p>
         </div>
 
-        <div ref={cardsRef} className="space-y-8">
-          {PROJECTS.map((project) => (
-            <motion.div
-              key={project.number}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              initial={{ opacity: 0, y: 40, scale: 0.9 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.8, delay: PROJECTS.indexOf(project) * 0.1, ease: "outElastic(0.5, 0.3)" }}
-              className="group relative bg-[#111111/80] backdrop-blur-sm rounded-2xl border border-[rgba(255,255,255,0.06)] p-8 lg:p-10 transition-all duration-400 hover:border-[rgba(0,212,255,0.25)] hover:shadow-[0_0_30px_rgba(0,212,255,0.3)]"
+        {/* Category Tabs */}
+        <div className="flex flex-wrap items-center gap-2 mb-10">
+          <span className="text-[12px] font-mono-jet text-[rgba(255,255,255,0.4)] mr-2 uppercase tracking-wider flex items-center gap-1.5">
+            <Filter size={13} />
+            Filter By:
+          </span>
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setSelectedCategory(cat)}
+              className={`px-4 py-2 rounded-full text-[12px] sm:text-[13px] font-medium transition-all ${
+                selectedCategory === cat
+                  ? 'bg-white text-[#0a0a0a] font-semibold'
+                  : 'bg-white/[0.04] text-[rgba(255,255,255,0.7)] hover:bg-white/[0.08] hover:text-white'
+              }`}
             >
-              {/* Animated project number with glow */}
-              <motion.div
-                whileHover={{ scale: 1.1, rotate: 2 }}
-                whileTap={{ scale: 0.9 }}
-                className="absolute -top-4 left-0 w-[60px] h-[60px] flex items-center justify-center text-[32px] font-bold text-[rgba(255,255,255,0.1)] border border-[rgba(255,255,255,0.1)] rounded-full"
-              >
-                {project.number}
-              </motion.div>
+              {cat}
+            </button>
+          ))}
+        </div>
 
-              <div className="relative z-10 grid grid-cols-1 lg:grid-cols-[60%_40%] gap-8 items-start">
+        {/* Projects List */}
+        <div className="space-y-8">
+          {filteredProjects.map((project) => (
+            <div
+              key={project.id}
+              className="group bg-[#111111] rounded-2xl border border-white/[0.07] p-7 lg:p-10 transition-all duration-300 hover:border-[rgba(0,212,255,0.3)] shadow-[0_10px_30px_rgba(0,0,0,0.3)]"
+            >
+              <div className="grid grid-cols-1 lg:grid-cols-[62%_38%] gap-8 items-start">
                 {/* Left: Content */}
-                <div className="relative z-10">
-                  <h3 className="text-subsection text-white mb-4">
-                    {project.name}
+                <div>
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className="font-display text-[32px] sm:text-[40px] font-bold text-[rgba(255,255,255,0.12)] leading-none group-hover:text-[#00d4ff]/30 transition-colors">
+                      {project.number}
+                    </span>
+                    <span className="px-2.5 py-0.5 rounded text-[10px] font-mono-jet uppercase bg-white/[0.05] text-[rgba(255,255,255,0.7)] border border-white/[0.08]">
+                      {project.category}
+                    </span>
+                  </div>
+
+                  <h3 className="font-display text-[24px] sm:text-[28px] font-bold text-white mb-1 group-hover:text-[#00d4ff] transition-colors">
+                    {project.title}
                   </h3>
-                  <p className="text-[15px] leading-[1.65] text-[rgba(255,255,255,0.65)] mb-6">
+                  <div className="text-[13px] text-[rgba(255,255,255,0.5)] font-mono-jet mb-4">
+                    {project.subtitle}
+                  </div>
+
+                  <p className="text-[14px] leading-relaxed text-[rgba(255,255,255,0.7)] mb-5">
                     {project.description}
                   </p>
-                  <div className="flex flex-wrap gap-2 mb-6">
-                    {project.tags.map((tag, index) => (
-                      <motion.span
-                        key={tag}
-                        whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                        initial={{ opacity: 0, y: 10, scale: 0.8 }}
-                        viewport={{ once: true, margin: "-50px" }}
-                        transition={{ duration: 0.6, delay: index * 0.05, ease: "outElastic(0.3, 0.5)" }}
-                        className="px-3 py-1 rounded-full text-[11px] font-medium text-[rgba(255,255,255,0.7)] bg-[rgba(255,255,255,0.08)] hover:bg-[rgba(0,212,255,0.2)] hover:text-white transition-all duration-300"
-                      >
+
+                  {/* Bullet points from CV */}
+                  <ul className="space-y-2 mb-6">
+                    {project.bullets.map((bullet, idx) => (
+                      <li key={idx} className="text-[13px] text-[rgba(255,255,255,0.6)] flex items-start gap-2.5 leading-relaxed">
+                        <span className="text-[#00d4ff] mt-1 shrink-0">▸</span>
+                        <span>{bullet}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  {/* Tags */}
+                  <div className="flex flex-wrap gap-1.5 mb-6">
+                    {project.tags.map((tag) => (
+                      <span key={tag} className="pill-tag text-[10px]">
                         {tag}
-                      </motion.span>
+                      </span>
                     ))}
                   </div>
-                  <motion.a
-                    href={project.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    whileHover={{ scale: 1.05, x: 2 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="inline-flex items-center gap-2 text-[13px] font-medium text-[#00d4ff] transition-all duration-300 hover:text-[rgba(0,212,255,0.8)]"
-                  >
-                    View Project
-                    <ArrowUpRight size={14} className="transition-transform duration-300" />
-                  </motion.a>
+
+                  {/* Action Link */}
+                  {project.githubUrl && (
+                    <a
+                      href={project.githubUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-[13px] font-semibold text-[#00d4ff] hover:underline"
+                    >
+                      <Github size={15} />
+                      <span>View on GitHub</span>
+                      <ArrowUpRight size={14} />
+                    </a>
+                  )}
                 </div>
 
-                {/* Right: Image with 3D effect */}
-                <div className="relative overflow-hidden rounded-xl aspect-[16/10]">
-                  <motion.div
-                    whileHover={{ scale: 1.03, y: -2 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="relative"
-                  >
-                    <img
-                      src={project.image}
-                      alt={project.name}
-                      className="w-full h-full object-cover transition-transform duration-800"
-                    />
-                    {/* Animated overlay for image */}
-                    <div className="absolute inset-0 bg-[radialgradient(circle_at_center_top,var(--neon-cyan)_0%,transparent_70%)] opacity-0 hover:opacity-30 transition-opacity duration-500" />
-                  </motion.div>
+                {/* Right: Preview Image Card */}
+                <div className="relative overflow-hidden rounded-xl aspect-[16/11] border border-white/[0.06] bg-[#161616]">
+                  <img
+                    src={project.image}
+                    alt={project.title}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-85 group-hover:opacity-100"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none" />
+                  <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-[11px] font-mono-jet text-[rgba(255,255,255,0.7)] pointer-events-none">
+                    <span>{project.category}</span>
+                    <span className="text-[#00d4ff]">IIT Kharagpur / Self</span>
+                  </div>
                 </div>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

@@ -1,138 +1,199 @@
-import { motion } from 'framer-motion';
+import { useEffect, useRef } from 'react';
+import gsap from 'gsap';
 import WaveCanvas from '../components/WaveCanvas';
-import Button from '@/components/ui/button';
+import { PERSONAL_INFO } from '../data/portfolioData';
+import { ArrowDown, FileText, ExternalLink } from 'lucide-react';
 
 interface HeroProps {
   onNavigate: (id: string) => void;
+  onOpenCvModal: () => void;
 }
 
-export default function Hero({ onNavigate }: HeroProps) {
-  // Variants for staggered animation
-  const textVariant = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
+export default function Hero({ onNavigate, onOpenCvModal }: HeroProps) {
+  const labelRef = useRef<HTMLDivElement>(null);
+  const line1Ref = useRef<HTMLDivElement>(null);
+  const line2Ref = useRef<HTMLDivElement>(null);
+  const subtitleRef = useRef<HTMLParagraphElement>(null);
+  const badgesRef = useRef<HTMLDivElement>(null);
+  const ctaRef = useRef<HTMLDivElement>(null);
+  const chevronRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const tl = gsap.timeline({ delay: 0.2 });
+
+    tl.to(labelRef.current, {
       opacity: 1,
       y: 0,
-      transition: { type: 'spring', stiffness: 300, damping: 20 },
-    },
-  };
+      duration: 0.8,
+      ease: 'power3.out',
+    })
+      .to(
+        line1Ref.current,
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: 'power3.out',
+        },
+        '-=0.6'
+      )
+      .to(
+        line2Ref.current,
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: 'power3.out',
+        },
+        '-=0.6'
+      )
+      .to(
+        badgesRef.current,
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: 'power3.out',
+        },
+        '-=0.5'
+      )
+      .to(
+        subtitleRef.current,
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: 'power3.out',
+        },
+        '-=0.5'
+      )
+      .to(
+        ctaRef.current,
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: 'power3.out',
+        },
+        '-=0.5'
+      )
+      .to(
+        chevronRef.current,
+        {
+          opacity: 1,
+          duration: 0.6,
+          ease: 'power2.out',
+        },
+        '-=0.3'
+      );
 
-  const ctaVariant = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { type: 'spring', stiffness: 300, damping: 20, delay: 0.5 },
-    },
-  };
-
-  const chevronVariant = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { type: 'spring', stiffness: 300, damping: 20, delay: 0.7 },
-    },
-  };
+    return () => {
+      tl.kill();
+    };
+  }, []);
 
   return (
     <section
       id="hero"
-      className="relative min-h-[100dvh] flex items-center justify-center overflow-hidden"
+      className="relative min-h-[100dvh] flex items-center justify-center overflow-hidden pt-20 pb-16"
     >
-      {/* Animated gradient background */}
-      <div className="gradient-bg" aria-hidden="true" />
       <WaveCanvas />
 
-      <div className="relative z-10 text-center flex flex-col items-center px-6">
+      <div className="relative z-10 text-center flex flex-col items-center px-6 max-w-5xl mx-auto">
         {/* Label */}
-        <motion.div
-          variants={textVariant}
-          initial="hidden"
-          animate="visible"
-          className="text-caption text-[rgba(255,255,255,0.5)] tracking-[0.15em] mb-8"
+        <div
+          ref={labelRef}
+          className="text-caption text-[rgba(255,255,255,0.6)] tracking-[0.18em] mb-4 opacity-0 translate-y-[30px]"
         >
-          IIT KHARAGPUR · PRODUCT ENGINEER · FULL-STACK DEVELOPER
-        </motion.div>
+          INDIAN INSTITUTE OF TECHNOLOGY KHARAGPUR · CLASS OF 2027
+        </div>
 
         {/* Main Heading */}
-        <motion.div className="font-display text-hero mb-6">
-          <motion.span
-            display="block"
-            variants={textVariant}
-            initial="hidden"
-            animate="visible"
-            className="text-white text-neon-glow"
-            style={{ textShadow: '0 0 80px rgba(0,212,255,0.15)' }}
+        <div className="font-display text-hero mb-6 select-none">
+          <div
+            ref={line1Ref}
+            className="text-white opacity-0 translate-y-[30px]"
+            style={{ textShadow: '0 0 60px rgba(0,212,255,0.15)' }}
           >
             VAMSHI
-          </motion.span>
-          <motion.span
-            display="block"
-            variants={textVariant}
-            initial="hidden"
-            animate="visible"
-            className="text-[#00d4ff] text-neon-glow-magenta"
-            style={{ textShadow: '0 0 80px rgba(0,212,255,0.25)' }}
+          </div>
+          <div
+            ref={line2Ref}
+            className="text-[#00d4ff] opacity-0 translate-y-[30px]"
+            style={{ textShadow: '0 0 80px rgba(0,212,255,0.3)' }}
           >
             KRISHNA
-          </motion.span>
-        </motion.div>
+          </div>
+        </div>
+
+        {/* Dynamic Domain Track Badges */}
+        <div
+          ref={badgesRef}
+          className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mb-6 opacity-0 translate-y-[30px]"
+        >
+          <span className="px-3.5 py-1.5 rounded-full text-[11px] sm:text-[12px] font-mono-jet uppercase tracking-wider bg-white/[0.06] border border-white/[0.12] text-white">
+            Product Management
+          </span>
+          <span className="text-[rgba(255,255,255,0.3)]">·</span>
+          <span className="px-3.5 py-1.5 rounded-full text-[11px] sm:text-[12px] font-mono-jet uppercase tracking-wider bg-[rgba(0,212,255,0.1)] border border-[rgba(0,212,255,0.3)] text-[#00d4ff]">
+            AI & Data Systems
+          </span>
+          <span className="text-[rgba(255,255,255,0.3)]">·</span>
+          <span className="px-3.5 py-1.5 rounded-full text-[11px] sm:text-[12px] font-mono-jet uppercase tracking-wider bg-white/[0.06] border border-white/[0.12] text-white">
+            Materials Engineering
+          </span>
+        </div>
 
         {/* Subtitle */}
-        <motion.p
-          variants={textVariant}
-          initial="hidden"
-          animate="visible"
-          className="text-body-large text-[rgba(255,255,255,0.65)] max-w-[600px] mb-10 text-neon-glow"
+        <p
+          ref={subtitleRef}
+          className="text-body-large text-[rgba(255,255,255,0.7)] max-w-2xl mb-10 opacity-0 translate-y-[30px]"
         >
-          Building at the intersection of software engineering, data systems, and
-          technical problem-solving.
-        </motion.p>
+          Bridging strategic product thinking, machine learning pipelines, and deep engineering analysis.
+          Co-Founder of <a href="https://signe.in" target="_blank" rel="noopener noreferrer" className="text-white font-medium hover:text-[#00d4ff] underline decoration-[#00d4ff]/40">Signe</a> (₹9L+ revenue), intern across Bounce Infinity & Lovingroom, and Inter-IIT gold medalist.
+        </p>
 
         {/* CTAs */}
-        <motion.div
-          variants={ctaVariant}
-          initial="hidden"
-          animate="visible"
-          className="flex flex-wrap gap-4 justify-center"
+        <div
+          ref={ctaRef}
+          className="flex flex-wrap gap-4 justify-center opacity-0 translate-y-[30px]"
         >
-          <Button
-            variant="neon"
-            onClick={() => onNavigate('projects')}
-            className="px-8 py-[14px] neon-glow"
+          <button
+            onClick={() => onNavigate('experience')}
+            className="bg-white text-[#0a0a0a] text-[14px] font-semibold px-8 py-[14px] rounded-pill transition-all duration-200 hover:bg-[#00d4ff] hover:shadow-[0_0_25px_rgba(0,212,255,0.4)]"
           >
-            View My Work
-          </Button>
-          <a
-            href="/Vamshi_Krishna_CV.pdf"
-            download="Vamshi_Krishna_CV.pdf"
-            className="bg-transparent text-white text-[14px] font-semibold px-8 py-[14px] rounded-pill border border-[rgba(255,255,255,0.2)] transition-all duration-200 hover:border-[rgba(0,212,255,0.5)] hover:text-[#00d4ff] flex items-center justify-center neon-glow-magenta"
+            Explore Experience
+          </button>
+          
+          <button
+            onClick={onOpenCvModal}
+            className="group bg-transparent text-white text-[14px] font-semibold px-8 py-[14px] rounded-pill border border-[rgba(255,255,255,0.2)] transition-all duration-200 hover:border-[#00d4ff] hover:text-[#00d4ff] flex items-center justify-center gap-2"
           >
-            Download CV
-          </a>
-        </motion.div>
+            <FileText size={16} className="text-[#00d4ff]" />
+            <span>Download CV (3 Tracks)</span>
+          </button>
 
-        {/* Scroll Indicator */}
-        <motion.div
-          variants={chevronVariant}
-          initial="hidden"
-          animate="visible"
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10"
-        >
-          <div className="animate-bounce-subtle">
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="rgba(255,255,255,0.3)"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <polyline points="6 9 12 15 18 9" />
-            </svg>
-          </div>
+          <a
+            href={PERSONAL_INFO.signeUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-white/[0.05] text-[rgba(255,255,255,0.8)] text-[14px] font-semibold px-6 py-[14px] rounded-pill border border-white/[0.08] transition-all duration-200 hover:bg-white/[0.1] hover:text-white flex items-center gap-2"
+          >
+            <span>Visit Signe.in</span>
+            <ExternalLink size={14} />
+          </a>
+        </div>
+      </div>
+
+      {/* Scroll Indicator */}
+      <div
+        ref={chevronRef}
+        className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 opacity-0 cursor-pointer"
+        onClick={() => onNavigate('achievements')}
+      >
+        <div className="flex flex-col items-center gap-1 text-[rgba(255,255,255,0.4)] hover:text-[#00d4ff] transition-colors">
+          <span className="text-[10px] font-mono-jet uppercase tracking-widest">Scroll</span>
+          <ArrowDown size={16} className="animate-bounce" />
         </div>
       </div>
     </section>

@@ -1,24 +1,29 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import Lenis from '@studio-freight/lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { motion } from 'framer-motion';
-import Cursor from './components/Cursor';
 
 import Navigation from './sections/Navigation';
 import Hero from './sections/Hero';
-import About from './sections/About';
+import DomainFilter from './components/DomainFilter';
 import Achievements from './sections/Achievements';
-import TechStack from './sections/TechStack';
+import Experience from './sections/Experience';
+import Ventures from './sections/Ventures';
 import Projects from './sections/Projects';
+import TechStack from './sections/TechStack';
+import About from './sections/About';
 import Philosophy from './sections/Philosophy';
 import Vision from './sections/Vision';
 import Contact from './sections/Contact';
+import CvDownloadModal from './components/CvDownloadModal';
+import type { DomainType } from './data/portfolioData';
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function App() {
   const lenisRef = useRef<Lenis | null>(null);
+  const [activeDomain, setActiveDomain] = useState<DomainType>('all');
+  const [isCvModalOpen, setIsCvModalOpen] = useState(false);
 
   useEffect(() => {
     // Check for reduced motion preference
@@ -52,100 +57,61 @@ export default function App() {
     };
   }, []);
 
-  const handleNavigate = useCallback(
-    (id: string) => {
-      const el = document.getElementById(id);
-      if (el) {
-        if (lenisRef.current) {
-          lenisRef.current.scrollTo(el, { offset: -72 });
-        } else {
-          el.scrollIntoView({ behavior: 'smooth' });
-        }
+  const handleNavigate = useCallback((id: string) => {
+    const el = document.getElementById(id);
+    if (el) {
+      if (lenisRef.current) {
+        lenisRef.current.scrollTo(el, { offset: -72 });
+      } else {
+        el.scrollIntoView({ behavior: 'smooth' });
       }
-    },
-    []
-  );
+    }
+  }, []);
 
   return (
-    <div className="relative overflow-hidden">
-      {/* Parallax background layers */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute inset-0 bg-[radialgradient(at_top_left,_rgba(0,100,255,0.03)_0%,transparent_50%)]
-                   animate-[slowMove_120s_linear_infinite]"></div>
-        <div className="absolute inset-0 bg-[radialgradient(at_bottom_right,_rgba(255,0,255,0.02)_0%,transparent_60%)]
-                   animate-[slowMove_180s_linear_infinite]"></div>
-        <div className="absolute inset-0 bg-[url('/static/stars.png')] bg-[size:200%_200%]
-                   animate-[twinkle_4s ease-in-out_infinite] opacity-20"></div>
-      </div>
+    <div className="relative bg-[#0a0a0a] text-white selection:bg-[#00d4ff]/30 selection:text-white">
+      <Navigation
+        onNavigate={handleNavigate}
+        onOpenCvModal={() => setIsCvModalOpen(true)}
+      />
 
-      <Navigation onNavigate={handleNavigate} />
-      <main className="relative z-10">
-        <motion.div
-          whileInView={{ opacity: 1, y: 0, scale: 1 }}
-          initial={{ opacity: 0, y: 50, scale: 0.95 }}
-          viewport={{ once: true, margin: "-200px" }}
-          transition={{ duration: 0.8, ease: "outElastic(0.5, 0.3)" }}
-        >
-          <Hero onNavigate={handleNavigate} />
-        </motion.div>
-        <motion.div
-          whileInView={{ opacity: 1, y: 0, scale: 1 }}
-          initial={{ opacity: 0, y: 50, scale: 0.95 }}
-          viewport={{ once: true, margin: "-200px" }}
-          transition={{ duration: 0.8, ease: "outElastic(0.5, 0.3)" }}
-        >
-          <About />
-        </motion.div>
-        <motion.div
-          whileInView={{ opacity: 1, y: 0, scale: 1 }}
-          initial={{ opacity: 0, y: 50, scale: 0.95 }}
-          viewport={{ once: true, margin: "-200px" }}
-          transition={{ duration: 0.8, ease: "outElastic(0.5, 0.3)" }}
-        >
-          <Achievements />
-        </motion.div>
-        <motion.div
-          whileInView={{ opacity: 1, y: 0, scale: 1 }}
-          initial={{ opacity: 0, y: 50, scale: 0.95 }}
-          viewport={{ once: true, margin: "-200px" }}
-          transition={{ duration: 0.8, ease: "outElastic(0.5, 0.3)" }}
-        >
-          <TechStack />
-        </motion.div>
-        <motion.div
-          whileInView={{ opacity: 1, y: 0, scale: 1 }}
-          initial={{ opacity: 0, y: 50, scale: 0.95 }}
-          viewport={{ once: true, margin: "-200px" }}
-          transition={{ duration: 0.8, ease: "outElastic(0.5, 0.3)" }}
-        >
-          <Projects />
-        </motion.div>
-        <motion.div
-          whileInView={{ opacity: 1, y: 0, scale: 1 }}
-          initial={{ opacity: 0, y: 50, scale: 0.95 }}
-          viewport={{ once: true, margin: "-200px" }}
-          transition={{ duration: 0.8, ease: "outElastic(0.5, 0.3)" }}
-        >
-          <Philosophy />
-        </motion.div>
-        <motion.div
-          whileInView={{ opacity: 1, y: 0, scale: 1 }}
-          initial={{ opacity: 0, y: 50, scale: 0.95 }}
-          viewport={{ once: true, margin: "-200px" }}
-          transition={{ duration: 0.8, ease: "outElastic(0.5, 0.3)" }}
-        >
-          <Vision />
-        </motion.div>
-        <motion.div
-          whileInView={{ opacity: 1, y: 0, scale: 1 }}
-          initial={{ opacity: 0, y: 50, scale: 0.95 }}
-          viewport={{ once: true, margin: "-200px" }}
-          transition={{ duration: 0.8, ease: "outElastic(0.5, 0.3)" }}
-        >
-          <Contact />
-        </motion.div>
+      <main>
+        <Hero
+          onNavigate={handleNavigate}
+          onOpenCvModal={() => setIsCvModalOpen(true)}
+        />
+
+        {/* Global Domain Track Bar */}
+        <div className="py-6 px-4 bg-[#0a0a0a] border-y border-white/[0.06] sticky top-[72px] z-30 backdrop-blur-lg bg-black/80">
+          <DomainFilter
+            activeDomain={activeDomain}
+            onSelectDomain={setActiveDomain}
+          />
+        </div>
+
+        <Achievements />
+
+        <Experience activeDomain={activeDomain} />
+
+        <Ventures />
+
+        <Projects activeDomain={activeDomain} />
+
+        <TechStack activeDomain={activeDomain} />
+
+        <About />
+
+        <Philosophy />
+
+        <Vision />
+
+        <Contact onOpenCvModal={() => setIsCvModalOpen(true)} />
       </main>
-      <Cursor />
+
+      <CvDownloadModal
+        isOpen={isCvModalOpen}
+        onClose={() => setIsCvModalOpen(false)}
+      />
     </div>
   );
 }

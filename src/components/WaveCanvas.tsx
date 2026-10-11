@@ -150,7 +150,6 @@ export default function WaveCanvas() {
       if (Math.random() < 0.003) {
         const x = Math.random() * width;
         const y = Math.random() * height * 0.5;
-        const length = 50 + Math.random() * 100;
         const branches = 2 + Math.floor(Math.random() * 2);
 
         ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';

@@ -1,31 +1,36 @@
 import { useEffect, useState, useCallback } from 'react';
+import { FileText } from 'lucide-react';
 
 interface NavigationProps {
   onNavigate: (id: string) => void;
+  onOpenCvModal: () => void;
 }
 
 const NAV_ITEMS = [
-  { label: 'Work', id: 'projects' },
+  { label: 'Experience', id: 'experience' },
+  { label: 'Ventures', id: 'ventures' },
+  { label: 'Projects', id: 'projects' },
+  { label: 'Awards', id: 'achievements' },
+  { label: 'Skills', id: 'skills' },
   { label: 'Profile', id: 'about' },
-  { label: 'Philosophy', id: 'philosophy' },
   { label: 'Contact', id: 'contact' },
 ];
 
-export default function Navigation({ onNavigate }: NavigationProps) {
+export default function Navigation({ onNavigate, onOpenCvModal }: NavigationProps) {
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('');
   const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > window.innerHeight * 0.8);
+      setScrolled(window.scrollY > 40);
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   useEffect(() => {
-    const sections = ['projects', 'about', 'philosophy', 'vision', 'contact'];
+    const sectionIds = ['experience', 'ventures', 'projects', 'achievements', 'skills', 'about', 'contact'];
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -34,10 +39,10 @@ export default function Navigation({ onNavigate }: NavigationProps) {
           }
         });
       },
-      { threshold: 0.3, rootMargin: '-72px 0px 0px 0px' }
+      { threshold: 0.25, rootMargin: '-72px 0px 0px 0px' }
     );
 
-    sections.forEach((id) => {
+    sectionIds.forEach((id) => {
       const el = document.getElementById(id);
       if (el) observer.observe(el);
     });
@@ -45,16 +50,19 @@ export default function Navigation({ onNavigate }: NavigationProps) {
     return () => observer.disconnect();
   }, []);
 
-  const handleNavClick = useCallback((id: string) => {
-    onNavigate(id);
-    setMobileOpen(false);
-  }, [onNavigate]);
+  const handleNavClick = useCallback(
+    (id: string) => {
+      onNavigate(id);
+      setMobileOpen(false);
+    },
+    [onNavigate]
+  );
 
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 h-[72px] flex items-center transition-all duration-300 ${
         scrolled
-          ? 'bg-[rgba(10,10,10,0.85)] backdrop-blur-[12px]'
+          ? 'bg-[rgba(10,10,10,0.92)] backdrop-blur-md border-b border-white/[0.06] shadow-lg'
           : 'bg-transparent'
       }`}
     >
@@ -62,20 +70,20 @@ export default function Navigation({ onNavigate }: NavigationProps) {
         {/* Brand */}
         <button
           onClick={() => onNavigate('hero')}
-          className="font-display text-[16px] font-bold text-white tracking-tight"
+          className="font-display text-[17px] font-bold text-white tracking-tight hover:text-[#00d4ff] transition-colors"
         >
-          VAMSHI
+          AREPALLY VAMSHI KRISHNA
         </button>
 
         {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden lg:flex items-center gap-7">
           {NAV_ITEMS.map((item) => (
             <button
               key={item.id}
               onClick={() => handleNavClick(item.id)}
               className={`text-[12px] font-medium uppercase tracking-[0.06em] transition-colors duration-200 ${
                 activeSection === item.id
-                  ? 'text-white'
+                  ? 'text-[#00d4ff]'
                   : 'text-[rgba(255,255,255,0.65)] hover:text-white'
               }`}
             >
@@ -84,44 +92,77 @@ export default function Navigation({ onNavigate }: NavigationProps) {
           ))}
         </div>
 
-        {/* CTA */}
-        <button
-          onClick={() => handleNavClick('contact')}
-          className="hidden md:block bg-white text-[#0a0a0a] text-[12px] font-semibold px-6 py-[10px] rounded-pill transition-all duration-200 hover:bg-[#00d4ff]"
-        >
-          Let's Talk
-        </button>
+        {/* Desktop CTA */}
+        <div className="hidden sm:flex items-center gap-3">
+          <button
+            onClick={onOpenCvModal}
+            className="flex items-center gap-1.5 px-4 py-2 rounded-pill text-[12px] font-semibold bg-white/[0.08] text-white hover:bg-white/[0.15] border border-white/[0.1] transition-all"
+          >
+            <FileText size={13} className="text-[#00d4ff]" />
+            <span>CV</span>
+          </button>
+          <button
+            onClick={() => handleNavClick('contact')}
+            className="bg-white text-[#0a0a0a] text-[12px] font-semibold px-5 py-2 rounded-pill transition-all duration-200 hover:bg-[#00d4ff]"
+          >
+            Let's Talk
+          </button>
+        </div>
 
         {/* Mobile Hamburger */}
         <button
-          className="md:hidden flex flex-col gap-[5px] p-2"
+          className="lg:hidden flex flex-col gap-[5px] p-2"
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label="Toggle menu"
         >
-          <span className={`block w-5 h-[1.5px] bg-white transition-all duration-200 ${mobileOpen ? 'rotate-45 translate-y-[6.5px]' : ''}`} />
-          <span className={`block w-5 h-[1.5px] bg-white transition-all duration-200 ${mobileOpen ? 'opacity-0' : ''}`} />
-          <span className={`block w-5 h-[1.5px] bg-white transition-all duration-200 ${mobileOpen ? '-rotate-45 -translate-y-[6.5px]' : ''}`} />
+          <span
+            className={`block w-5 h-[1.5px] bg-white transition-all duration-200 ${
+              mobileOpen ? 'rotate-45 translate-y-[6.5px]' : ''
+            }`}
+          />
+          <span
+            className={`block w-5 h-[1.5px] bg-white transition-all duration-200 ${
+              mobileOpen ? 'opacity-0' : ''
+            }`}
+          />
+          <span
+            className={`block w-5 h-[1.5px] bg-white transition-all duration-200 ${
+              mobileOpen ? '-rotate-45 -translate-y-[6.5px]' : ''
+            }`}
+          />
         </button>
       </div>
 
       {/* Mobile Overlay */}
       {mobileOpen && (
-        <div className="fixed inset-0 top-[72px] bg-[#0a0a0a] z-40 md:hidden flex flex-col items-center pt-16 gap-8">
+        <div className="fixed inset-0 top-[72px] bg-[#0a0a0a]/98 backdrop-blur-xl z-40 lg:hidden flex flex-col items-center pt-10 gap-6">
           {NAV_ITEMS.map((item) => (
             <button
               key={item.id}
               onClick={() => handleNavClick(item.id)}
-              className="font-display text-[32px] font-semibold text-white"
+              className="font-display text-[24px] font-semibold text-white hover:text-[#00d4ff]"
             >
               {item.label}
             </button>
           ))}
-          <button
-            onClick={() => handleNavClick('contact')}
-            className="mt-8 bg-white text-[#0a0a0a] text-[14px] font-semibold px-8 py-3 rounded-pill"
-          >
-            Let's Talk
-          </button>
+          <div className="flex flex-col gap-3 mt-4 w-4/5 max-w-xs">
+            <button
+              onClick={() => {
+                setMobileOpen(false);
+                onOpenCvModal();
+              }}
+              className="flex items-center justify-center gap-2 py-3 rounded-pill text-[14px] font-semibold bg-white/[0.08] text-white border border-white/[0.12]"
+            >
+              <FileText size={16} className="text-[#00d4ff]" />
+              <span>Download CV</span>
+            </button>
+            <button
+              onClick={() => handleNavClick('contact')}
+              className="py-3 rounded-pill text-[14px] font-semibold bg-white text-[#0a0a0a]"
+            >
+              Let's Talk
+            </button>
+          </div>
         </div>
       )}
     </nav>
