@@ -63,7 +63,7 @@ export default function About() {
               <p>
                 I am a B.Tech (Hons.) scholar in Metallurgical and Materials Engineering at the{' '}
                 <span className="text-white font-medium">Indian Institute of Technology, Kharagpur</span>{' '}
-                (Roll: {PERSONAL_INFO.rollNumber}, Class of 2027).
+                (CGPA: {PERSONAL_INFO.cgpa}, Class of 2027).
               </p>
               <p>
                 My journey spans three interlocked disciplines: <strong className="text-white">Product Management</strong>, where I translate qualitative feedback into quantitative PRDs and growth funnels; <strong className="text-white">AI & Data Engineering</strong>, where I construct machine learning pipelines (XGBoost, Isolation Forest) and LLM-powered interfaces; and <strong className="text-white">Materials Science</strong>, where I investigate green hydrometallurgy and electrochemical battery systems.
@@ -166,7 +166,7 @@ export default function About() {
               <div className="glass-card p-5 text-center">
                 <div className="font-display text-[26px] font-bold text-white">3</div>
                 <div className="text-[11px] text-[rgba(255,255,255,0.6)] mt-1 uppercase tracking-wider font-mono-jet">
-                  CV Specializations
+                  Domain Specializations
                 </div>
               </div>
             </div>

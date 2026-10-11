@@ -2,14 +2,13 @@ import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import WaveCanvas from '../components/WaveCanvas';
 import { PERSONAL_INFO } from '../data/portfolioData';
-import { ArrowDown, FileText, ExternalLink } from 'lucide-react';
+import { ArrowDown, ExternalLink } from 'lucide-react';
 
 interface HeroProps {
   onNavigate: (id: string) => void;
-  onOpenCvModal: () => void;
 }
 
-export default function Hero({ onNavigate, onOpenCvModal }: HeroProps) {
+export default function Hero({ onNavigate }: HeroProps) {
   const labelRef = useRef<HTMLDivElement>(null);
   const line1Ref = useRef<HTMLDivElement>(null);
   const line2Ref = useRef<HTMLDivElement>(null);
@@ -164,22 +163,14 @@ export default function Hero({ onNavigate, onOpenCvModal }: HeroProps) {
           >
             Explore Experience
           </button>
-          
-          <button
-            onClick={onOpenCvModal}
-            className="group bg-transparent text-white text-[14px] font-semibold px-8 py-[14px] rounded-pill border border-[rgba(255,255,255,0.2)] transition-all duration-200 hover:border-[#00d4ff] hover:text-[#00d4ff] flex items-center justify-center gap-2"
-          >
-            <FileText size={16} className="text-[#00d4ff]" />
-            <span>Download CV (3 Tracks)</span>
-          </button>
 
           <a
             href={PERSONAL_INFO.signeUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-white/[0.05] text-[rgba(255,255,255,0.8)] text-[14px] font-semibold px-6 py-[14px] rounded-pill border border-white/[0.08] transition-all duration-200 hover:bg-white/[0.1] hover:text-white flex items-center gap-2"
+            className="bg-white/[0.05] text-[rgba(255,255,255,0.85)] text-[14px] font-semibold px-7 py-[14px] rounded-pill border border-white/[0.1] transition-all duration-200 hover:bg-white/[0.1] hover:text-white flex items-center gap-2"
           >
-            <span>Visit Signe.in</span>
+            <span>Visit Signe.in (Co-Founder)</span>
             <ExternalLink size={14} />
           </a>
         </div>

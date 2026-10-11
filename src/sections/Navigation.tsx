@@ -1,9 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
-import { FileText } from 'lucide-react';
 
 interface NavigationProps {
   onNavigate: (id: string) => void;
-  onOpenCvModal: () => void;
 }
 
 const NAV_ITEMS = [
@@ -16,7 +14,7 @@ const NAV_ITEMS = [
   { label: 'Contact', id: 'contact' },
 ];
 
-export default function Navigation({ onNavigate, onOpenCvModal }: NavigationProps) {
+export default function Navigation({ onNavigate }: NavigationProps) {
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('');
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -95,13 +93,6 @@ export default function Navigation({ onNavigate, onOpenCvModal }: NavigationProp
         {/* Desktop CTA */}
         <div className="hidden sm:flex items-center gap-3">
           <button
-            onClick={onOpenCvModal}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-pill text-[12px] font-semibold bg-white/[0.08] text-white hover:bg-white/[0.15] border border-white/[0.1] transition-all"
-          >
-            <FileText size={13} className="text-[#00d4ff]" />
-            <span>CV</span>
-          </button>
-          <button
             onClick={() => handleNavClick('contact')}
             className="bg-white text-[#0a0a0a] text-[12px] font-semibold px-5 py-2 rounded-pill transition-all duration-200 hover:bg-[#00d4ff]"
           >
@@ -146,16 +137,6 @@ export default function Navigation({ onNavigate, onOpenCvModal }: NavigationProp
             </button>
           ))}
           <div className="flex flex-col gap-3 mt-4 w-4/5 max-w-xs">
-            <button
-              onClick={() => {
-                setMobileOpen(false);
-                onOpenCvModal();
-              }}
-              className="flex items-center justify-center gap-2 py-3 rounded-pill text-[14px] font-semibold bg-white/[0.08] text-white border border-white/[0.12]"
-            >
-              <FileText size={16} className="text-[#00d4ff]" />
-              <span>Download CV</span>
-            </button>
             <button
               onClick={() => handleNavClick('contact')}
               className="py-3 rounded-pill text-[14px] font-semibold bg-white text-[#0a0a0a]"

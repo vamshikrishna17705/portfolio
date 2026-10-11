@@ -1,16 +1,12 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Linkedin, Github, ExternalLink, Mail, FileText, ShoppingBag } from 'lucide-react';
+import { Linkedin, Github, ExternalLink, Mail, ShoppingBag } from 'lucide-react';
 import { PERSONAL_INFO } from '../data/portfolioData';
 
 gsap.registerPlugin(ScrollTrigger);
 
-interface ContactProps {
-  onOpenCvModal: () => void;
-}
-
-export default function Contact({ onOpenCvModal }: ContactProps) {
+export default function Contact() {
   const sectionRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
@@ -62,22 +58,11 @@ export default function Contact({ onOpenCvModal }: ContactProps) {
 
           <a
             href={`mailto:${PERSONAL_INFO.email}`}
-            className="font-display text-[20px] sm:text-[24px] text-[#00d4ff] hover:underline inline-flex items-center gap-2 mb-8"
+            className="font-display text-[20px] sm:text-[24px] text-[#00d4ff] hover:underline inline-flex items-center gap-2 mb-10"
           >
             <Mail size={20} />
             <span>{PERSONAL_INFO.email}</span>
           </a>
-
-          {/* CV Download CTA */}
-          <div className="mb-10">
-            <button
-              onClick={onOpenCvModal}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-pill bg-white text-[#0a0a0a] text-[13px] font-semibold hover:bg-[#00d4ff] transition-all duration-200"
-            >
-              <FileText size={16} />
-              <span>Download Tailored CV (3 Tracks)</span>
-            </button>
-          </div>
 
           {/* Social Links */}
           <div className="flex flex-wrap items-center justify-center gap-6">

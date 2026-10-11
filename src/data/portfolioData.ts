@@ -62,7 +62,7 @@ export const PERSONAL_INFO = {
   degree: 'B.Tech. (Hons.) in Metallurgical & Materials Engineering',
   institute: 'Indian Institute of Technology, Kharagpur',
   classYear: '2027',
-  cgpa: '6.72 / 10',
+  cgpa: '7.42 / 10',
   email: 'arepallyvamshikrishna17@gmail.com',
   linkedin: 'https://linkedin.com/in/arepally-vamshi-krishna-176599327',
   github: 'https://github.com/vamshikrishna17705',
@@ -104,7 +104,7 @@ export const EDUCATION_DATA: EducationItem[] = [
     degree: 'B.Tech. (Hons.) in Metallurgical and Materials Engineering',
     institution: 'IIT Kharagpur',
     year: '2023 - 2027',
-    score: '6.72 / 10 CGPA',
+    score: '7.42 / 10 CGPA',
     detail: 'Core coursework in Thermodynamics, Computational Metallurgy, Transport Phenomena, and Materials Characterization',
   },
   {

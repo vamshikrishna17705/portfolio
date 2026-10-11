@@ -15,7 +15,6 @@ import About from './sections/About';
 import Philosophy from './sections/Philosophy';
 import Vision from './sections/Vision';
 import Contact from './sections/Contact';
-import CvDownloadModal from './components/CvDownloadModal';
 import type { DomainType } from './data/portfolioData';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -23,7 +22,6 @@ gsap.registerPlugin(ScrollTrigger);
 export default function App() {
   const lenisRef = useRef<Lenis | null>(null);
   const [activeDomain, setActiveDomain] = useState<DomainType>('all');
-  const [isCvModalOpen, setIsCvModalOpen] = useState(false);
 
   useEffect(() => {
     // Check for reduced motion preference
@@ -70,16 +68,10 @@ export default function App() {
 
   return (
     <div className="relative bg-[#0a0a0a] text-white selection:bg-[#00d4ff]/30 selection:text-white">
-      <Navigation
-        onNavigate={handleNavigate}
-        onOpenCvModal={() => setIsCvModalOpen(true)}
-      />
+      <Navigation onNavigate={handleNavigate} />
 
       <main>
-        <Hero
-          onNavigate={handleNavigate}
-          onOpenCvModal={() => setIsCvModalOpen(true)}
-        />
+        <Hero onNavigate={handleNavigate} />
 
         {/* Global Domain Track Bar */}
         <div className="py-6 px-4 bg-[#0a0a0a] border-y border-white/[0.06] sticky top-[72px] z-30 backdrop-blur-lg bg-black/80">
@@ -105,13 +97,8 @@ export default function App() {
 
         <Vision />
 
-        <Contact onOpenCvModal={() => setIsCvModalOpen(true)} />
+        <Contact />
       </main>
-
-      <CvDownloadModal
-        isOpen={isCvModalOpen}
-        onClose={() => setIsCvModalOpen(false)}
-      />
     </div>
   );
 }

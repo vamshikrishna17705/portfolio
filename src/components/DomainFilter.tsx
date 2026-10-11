@@ -8,7 +8,7 @@ interface DomainFilterProps {
 
 export default function DomainFilter({ activeDomain, onSelectDomain }: DomainFilterProps) {
   const tabs = [
-    { id: 'all' as DomainType, label: 'All Disciplines', icon: Layers, count: '3 CV Tracks' },
+    { id: 'all' as DomainType, label: 'All Disciplines', icon: Layers, count: '3 Tracks' },
     { id: 'pm' as DomainType, label: 'Product Management', icon: Briefcase, count: 'Growth & PM' },
     { id: 'data-ai' as DomainType, label: 'Data Science & AI', icon: Cpu, count: 'ML & Analytics' },
     { id: 'engineering' as DomainType, label: 'Materials Engineering', icon: Flame, count: 'IIT KGP Core' },
